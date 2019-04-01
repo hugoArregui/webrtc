@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/pions/logging"
 	"github.com/pions/transport/test"
 )
 
@@ -73,7 +74,14 @@ func TestNoEndpoints(t *testing.T) {
 	if err != nil {
 		panic("Failed to close network pipe")
 	}
-	m := NewMux(ca, 8192)
+
+	config := Config{
+		Conn:          ca,
+		BufferSize:    8192,
+		LoggerFactory: logging.NewDefaultLoggerFactory(),
+	}
+
+	m := NewMux(config)
 	err = m.dispatch(make([]byte, 1))
 	if err != nil {
 		t.Fatal(err)
